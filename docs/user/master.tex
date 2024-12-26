@@ -1,0 +1,32 @@
+\documentclass{style}
+\setlength{\headheight}{13.0pt}
+
+\input{preamble.tex}
+
+\pagestyle{normal}
+
+\title{User Documentation}
+\author{Alexander}
+
+
+\usepackage{lipsum}
+
+
+\begin{document}
+
+\maketitle
+\renewcommand{\thepage}{\roman{page}}
+
+\pagestyle{plain}
+\newpage \thispagestyle{empty} \vspace*{\fill} \newpage %%Convert 2 page zoom => 2 page view
+\tableofcontents
+\cleardoublepage
+
+\pagestyle{normal}
+\renewcommand{\thepage}{\arabic{page}}
+\setcounter{page}{1}
+\chapter{This is a chapter}
+\section{This is a section}
+\lipsum[1-20]
+
+\end{document}

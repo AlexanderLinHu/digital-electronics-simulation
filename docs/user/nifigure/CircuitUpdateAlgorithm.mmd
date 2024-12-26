@@ -1,0 +1,42 @@
+stateDiagram
+
+%% DCM ==> Dependency Chain Mapping {System (dependency) ==> List of systems (dependents)}
+%% SWM ==> Stack With Membership Query
+%% UCS ==> Updated and Current Stable Systems
+init: Initialize Required DataStructures [DCM, SWM, UCS]
+updateMAIN: Push Main (controller) circuit to stack
+popStack0: Pop stack
+peekStack0: Peek stack
+peekStack1: Peek stack
+updateOBP: Push all input bus to stack
+updateOUT: Update System Out and add to UCS
+applyDCM: Remove-All DCM[system] from UCS. Push all to stack
+pushIfNotInUCS: Push input system(s) if not in UCS
+circuit: Push all circuit output busses to stack
+
+[*] --> init
+init --> updateMAIN
+updateMAIN --> peekStack0
+peekStack0 --> updateOBP: Is Circuit
+updateOBP --> peekStack1
+peekStack1 --> pushIfNotInUCS
+peekStack0 --> pushIfNotInUCS: Is Device
+
+state qwe <<choice>>
+state if0 <<choice>>
+updateOBP --> if0: Nothing pushed
+
+pushIfNotInUCS --> qwe
+qwe --> updateOBP: >0 System pushed
+qwe --> if0: Otherwise
+
+
+if0 --> popStack0: Otherwise
+popStack0 --> updateOUT
+updateOUT --> applyDCM: Otherwise
+updateOUT --> peekStack0: No outputs changed
+if0 --> circuit: Is Circuit, and Output Busses not in UCS
+circuit --> peekStack0
+
+applyDCM --> peekStack0
+peekStack0 --> [*]: Stack is empty
