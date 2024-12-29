@@ -2,6 +2,7 @@ package sim.component;
 
 import sim.component.connection.OutputPointer;
 import sim.controller.IdGenerator;
+import sim.exception.Status;
 import sim.exception.StatusRuntimeException;
 
 
@@ -62,16 +63,22 @@ public abstract class Device implements System {
      * @param numOutputBus the number of output buses
      * @param initialOutputState the value(s) of the output buses on device creation, if {@code null} then all output
      *                              buses are initialized to {@code false}
-     * @throws IllegalArgumentException if given a negative number of input or output buses, or
-     *                                  {@code numOutputBus != length(initialOutputState)}
+     * @throws StatusRuntimeException with status code, <ul>
+     *  <li>{@link StatusCodesSys#INCONSISTENT_BUS_COUNT} if given a negative number of input or output buses,
+     *      or {@code numOutputBus != length(initialOutputState)}
+     * </ul>
      */
     public Device(String type, int numInputBus, int numOutputBus, boolean[] initialOutputState) {
-        this.type = type == null ? "" : type;
+        this.type = type;
+        // this.type = type == null ? "" : type;
+        // TODO integration with blueprint class(es);
+
+
         this.id = IdGenerator.get();
 
         if ((numInputBus < 0) || (numOutputBus < 0)) {
-            throw new IllegalArgumentException(
-                "System with id " + id  + " of type <" + getType() + "> received a negative number of IO buses");
+            throw new StatusRuntimeException(new Status(Status.Location.SYS, Status.UNEXPECTED_NEGATIVE_VALUE, "Tried creating device type <" + type
+             + "> with " + numInputBus + " inputs and " + numOutputBus + " outputs"));
         }
 
         // Initialize fields
@@ -84,10 +91,7 @@ public abstract class Device implements System {
         }
 
         if (numOutputBus != initialOutputState.length) {
-            throw new IllegalArgumentException(
-                "System with id " + id  + " of type <" + getType() + "> expected " + numOutputBus
-                + " output buses but received " + initialOutputState.length + " initial output values"
-            );
+            throw StatusCodesSys.runtimeException(StatusCodesSys.INCONSISTENT_BUS_COUNT, numOutputBus, initialOutputState.length);
         }
 
         for (int i = 0; i < numOutputBus; i++) {
@@ -182,11 +186,17 @@ public abstract class Device implements System {
         return out;
     }
 
+    /**
+     * @throws StatusRuntimeException {@inheritDoc}
+     */
     @Override
     public boolean getOut(String bus) {
         return outputBuffer[outAliasToIndex(bus)];
     }
 
+    /**
+     * @throws ArrayIndexOutOfBoundsException {@inheritDoc}
+     */
     @Override
     public boolean getOut(int bus) {
         return outputBuffer[bus];

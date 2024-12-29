@@ -54,8 +54,8 @@ public interface System {
      * @param  toBus   alias of the input bus to receive the signal
      * @throws UnsupportedOperationException if this system does not have input buses
      * @throws StatusRuntimeException with status codes, <ul>
-     *  <li>{@value StatusCodesSys#EXISTING_CONNECTION} if {@code toBus} is already connected
-     *  <li>{@value StatusCodesSys#BUS_DNE} if at least one of the specified buses does not exist
+     *  <li>{@link StatusCodesSys#EXISTING_CONNECTION} if {@code toBus} is already connected
+     *  <li>{@link StatusCodesSys#BUS_DNE} if at least one of the specified buses does not exist
      * </ul>
      */
     void connectInput(System fromSystem, String fromBus, String toBus);
@@ -125,7 +125,7 @@ public interface System {
      * @param alias the alias to convert to index
      * @return int index of the bus
      * @throws StatusRuntimeException with status codes, <ul>
-     *  <li>{@value StatusCodesSys#UNKNOWN_INPUT_ALIAS_TO_INDEX} if alias is not recognized
+     *  <li>{@link StatusCodesSys#UNKNOWN_INPUT_ALIAS} if alias is not recognized
      */
     int inAliasToIndex(String alias);
 
@@ -135,7 +135,7 @@ public interface System {
      * @param index the index to convert to its alias
      * @return {@code String} alias of the index (if no alias exists, returns the provided index as a string)
      * @throws StatusRuntimeException with status codes, <ul>
-     *  <li>{@value StatusCodesSys#UNKNOWN_INPUT_INDEX_TO_ALIAS} if index is negative or greater than number of inputs
+     *  <li>{@link StatusCodesSys#UNKNOWN_INPUT_INDEX} if index is negative or greater than number of inputs
      */
     String inIndexToAlias(int index);
 
@@ -146,7 +146,7 @@ public interface System {
      * @param alias the alias to convert to index
      * @return int index of the bus
      * @throws StatusRuntimeException with status codes, <ul>
-     *  <li>{@value StatusCodesSys#UNKNOWN_OUTPUT_ALIAS_TO_INDEX} if alias is not recognized
+     *  <li>{@link StatusCodesSys#UNKNOWN_OUTPUT_ALIAS} if alias is not recognized
      */
     int outAliasToIndex(String alias);
 
@@ -156,7 +156,7 @@ public interface System {
      * @param index the index to convert to its alias
      * @return {@code String} alias of the index (if no alias exists, returns the provided index as a string)
      * @throws StatusRuntimeException with status codes, <ul>
-     *  <li>{@value StatusCodesSys#UNKNOWN_OUTPUT_INDEX_TO_ALIAS} if index is negative or greater than number of outputs
+     *  <li>{@link StatusCodesSys#UNKNOWN_OUTPUT_INDEX} if index is negative or greater than number of outputs
      */
     String outIndexToAlias(int index);
 

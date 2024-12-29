@@ -33,7 +33,7 @@ public interface SingleOutputBus extends System {
         }
         catch (NumberFormatException e) {}
 
-        throw StatusCodesSys.runtimeException(StatusCodesSys.UNKNOWN_OUTPUT_ALIAS_TO_INDEX, alias);
+        throw StatusCodesSys.runtimeException(StatusCodesSys.UNKNOWN_OUTPUT_ALIAS, alias);
     }
 
     /**
@@ -45,6 +45,6 @@ public interface SingleOutputBus extends System {
             return SingleOutputBus.OUT_BUS_ALIAS;
         }
 
-        throw StatusCodesSys.runtimeException(StatusCodesSys.UNKNOWN_OUTPUT_INDEX_TO_ALIAS, index);
+        throw StatusCodesSys.runtimeException(StatusCodesSys.UNKNOWN_OUTPUT_INDEX, index);
     }
 }

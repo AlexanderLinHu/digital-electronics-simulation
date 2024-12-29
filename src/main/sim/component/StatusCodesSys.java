@@ -13,18 +13,22 @@ public final class StatusCodesSys {
 
 
     //region; status codes
-    public static final int UNKNOWN_INPUT_ALIAS_TO_INDEX = 310;
-    public static final int UNKNOWN_INPUT_INDEX_TO_ALIAS = 311;
-    public static final int UNKNOWN_OUTPUT_ALIAS_TO_INDEX = 312;
-    public static final int UNKNOWN_OUTPUT_INDEX_TO_ALIAS = 313;
+    public static final int INCONSISTENT_BUS_COUNT = 223;
 
-    public static final int EXISTING_CONNECTION = 320;
-    public static final int BUS_DNE = 321;
+    public static final int UNKNOWN_INPUT_ALIAS = 310;
+    public static final int UNKNOWN_INPUT_INDEX = 311;
+    public static final int DUPLICATE_INPUT_ALIAS = 312;
+    public static final int UNKNOWN_OUTPUT_ALIAS = 320;
+    public static final int UNKNOWN_OUTPUT_INDEX = 321;
+    public static final int DUPLICATE_OUTPUT_ALIAS = 322;
+
+    public static final int EXISTING_CONNECTION = 330;
+    public static final int BUS_DNE = 331;
     //endregion
 
-
+    //TODO add messages
     static {
-        detailTemplate.put(UNKNOWN_INPUT_ALIAS_TO_INDEX, "Unknown ");
+        detailTemplate.put(UNKNOWN_INPUT_ALIAS, "Unknown ");
     }
 
     public static Status message(int code, Object... o) {
@@ -55,6 +59,4 @@ public final class StatusCodesSys {
     }
 
     private StatusCodesSys() {}
-
-
 }

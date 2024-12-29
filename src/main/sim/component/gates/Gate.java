@@ -93,7 +93,7 @@ public abstract sealed class Gate extends Device implements SingleOutputBus
         }
         catch (NumberFormatException e) {}
 
-        throw StatusCodesSys.runtimeException(StatusCodesSys.UNKNOWN_INPUT_ALIAS_TO_INDEX, alias);
+        throw StatusCodesSys.runtimeException(StatusCodesSys.UNKNOWN_INPUT_ALIAS, alias);
     }
 
     /**
@@ -110,7 +110,7 @@ public abstract sealed class Gate extends Device implements SingleOutputBus
             return Integer.toString(index);
         }
 
-        throw StatusCodesSys.runtimeException(StatusCodesSys.UNKNOWN_INPUT_INDEX_TO_ALIAS, index);
+        throw StatusCodesSys.runtimeException(StatusCodesSys.UNKNOWN_INPUT_INDEX, index);
     }
 
     //Output alias conversion methods are handled by the SingleOutputBus interface
