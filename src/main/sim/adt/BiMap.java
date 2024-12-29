@@ -63,6 +63,14 @@ public class BiMap<K, V> {
     }
 
     /**
+     * @return the number of mappings in the map
+     * @see Map#size
+     */
+    public int size() {
+        return keyValue.size();
+    }
+
+    /**
      * Get the value associated with this key, or null if not in the mapping
      *
      * @param key the key whose associated value is to be returned
@@ -153,4 +161,6 @@ public class BiMap<K, V> {
     public Set<V> getAllValues() {
         return valueKey.keySet();
     }
+
+
 }
