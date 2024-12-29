@@ -42,8 +42,8 @@ public final class StatusCodesSys {
             code = Status.UNKNOWN_STATUS_CODE;
         }
         catch (IllegalFormatConversionException e) {
-            detail = "Tried generating status-sys-message with code " + code + " but the object array contains unexpected elements or "
-                    + "is in the wrong order.";
+            detail = "Tried generating status-sys-message with code " + code + " but the object array contains " +
+                     "unexpected elements or is in the wrong order.";
             code = Status.INCORRECT_FORMAT_OBJECTS;
         }
 

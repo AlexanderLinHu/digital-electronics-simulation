@@ -8,13 +8,17 @@ import sim.component.connection.OutputPointer;
 public final class CircuitBlueprint extends Blueprint {
 
     private final String type;
-    private final String[] inputPinAlias;
-    private final String[] outputPinAlias;
+    private final String[] inputAliases;
+    private final String[] outputAliases;
 
     private final List<InternalSysReference> InternalSystems;
     private final List<InternalConnection> internalConnections;
 
     public CircuitBlueprint(Circuit circuit) {
+        this.type = circuit.getType();
+        this.inputAliases = circuit.getAllInputAlias();
+        this.outputAliases = circuit.getAllOutputAlias();
+
         throw new UnsupportedOperationException();
     }
 

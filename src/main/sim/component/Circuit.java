@@ -17,7 +17,6 @@ import sim.exception.StatusRuntimeException;
  */
 public class Circuit implements System {
 
-
     /**
      * The input bus of the circuit, each {@code BufferGate} represents an input bus to the circuit. Where the buffer
      * gate's input is from an external (including this circuit's outputs) system, and its outputs are read by
@@ -46,6 +45,7 @@ public class Circuit implements System {
     /** The type of circuit this is */
     protected final String type;
 
+    /** If registered with Blueprint-class then new internal connections are not allowed */
     protected boolean isRegistered;
 
     /**
@@ -80,7 +80,7 @@ public class Circuit implements System {
      * and non-null.
      *
      * <p>The default value of the initial input and output buses is all {@code false}.
-     * The default for an alias array is an array where the ith index contains the {@code String} representation of i. I.e. {@code ["0", "1", ...]}
+     * The default for an alias array is specified in {@link #generateDefaultPinAliases}
      *
      * <p>Bus aliases allows the user to assign names to each bus. Each alias must be unique for their type of bus
      * (all input bus aliases must be unique from each other, likewise for output bus aliases). The index of each alias
@@ -92,20 +92,21 @@ public class Circuit implements System {
      * @param numInputBus the number of input buses on the circuit. Must be non-negative
      * @param numOutputBus the number of output buses on the circuit. Must be non-negative
      * @param initialOutputState the initial output values of the output buses
-     * @param inputPinAlias an array of aliases where alias X at index i creates the bi-directional mapping {@code X <=> inputBus[i]}. All
-     *                      entries must be unique.
-     * @param outputPinAlias an array of aliases where alias X at index i creates the bi-directional mapping {@code X <=> outputBus[i]}. All
-     *                      entries must be unique.
+     * @param inputPinAlias an array of aliases where alias X at index i creates the bi-directional mapping
+     *                      {@code X <=> inputBus[i]}. All entries must be unique.
+     * @param outputPinAlias an array of aliases where alias X at index i creates the bi-directional mapping
+     *                      {@code X <=> outputBus[i]}. All entries must be unique.
      * @throws StatusRuntimeException with status codes, <ul>
-     *  <li>{@link StatusCodesSys#INCONSISTENT_BUS_COUNT} if there is inconsistency between expected number of IO busses and received
-     *              (through {@code initialOutputState} or alias arrays)
+     *  <li>{@link StatusCodesSys#INCONSISTENT_BUS_COUNT} if there is inconsistency between expected number of IO busses
+     *              and received (through {@code initialOutputState} or alias arrays)
      *  <li>{@link StatusCodesSys#DUPLICATE_INPUT_ALIAS} if the input alias array contains duplicates
      *  <li>{@link StatusCodesSys#DUPLICATE_OUTPUT_ALIAS} if the output alias array contains duplicates
      * </ul>
      * @see Blueprint
      * @see Blueprint#build(String)
      */
-    public Circuit(String type, int numInputBus, int numOutputBus, boolean[] initialOutputState, String[] inputPinAlias, String[] outputPinAlias) {
+    public Circuit(String type, int numInputBus, int numOutputBus, boolean[] initialOutputState,
+                   String[] inputPinAlias, String[] outputPinAlias) {
 
         this.type = type;
         this.isRegistered = false;
@@ -350,6 +351,26 @@ public class Circuit implements System {
         throw StatusCodesSys.runtimeException(StatusCodesSys.UNKNOWN_OUTPUT_INDEX, index);
     }
 
+    /**
+     * Returns an array of all input aliases for this circuit. The order of the array is the same found internally, I.e.
+     * {@code Let 0 <= i < numInputBusses, x := getAllInputAliases()[i]. Then, inAliasToIndex(x) == i }
+     *
+     * @return array of input aliases, as described above
+     */
+    public String[] getAllInputAlias() {
+
+    }
+
+    /**
+     * Returns an array of all output aliases for this circuit. The order of the array is the same found internally, I.e.
+     * {@code Let 0 <= i < numOutputBusses, x := getAllOutputAliases()[i]. Then, outAliasToIndex(x) == i }
+     *
+     * @return array of output aliases, as described above
+     */
+    public String[] getAllOutputAlias() {
+
+    }
+
     //*>> ----------------------------------------------------------------------------------------------------------- <<*//
     //*>>                                               Get Operations                                                <<*//
     //*>> ----------------------------------------------------------------------------------------------------------- <<*//
@@ -376,6 +397,7 @@ public class Circuit implements System {
         return outputBus[bus].getOut(0);
     }
 
+    @Override
     public OutputPointer[] getInputBus() {
         OutputPointer[] inputs = new OutputPointer[inputBus.length];
 
@@ -386,10 +408,12 @@ public class Circuit implements System {
         return inputs;
     }
 
+    @Override
     public int getID() {
         return id;
     }
 
+    @Override
     public String getType() {
         return type;
     }
