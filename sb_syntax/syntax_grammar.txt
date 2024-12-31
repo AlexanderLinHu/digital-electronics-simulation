@@ -1,0 +1,59 @@
+// //      comment
+// ()      grouping
+// []      optional
+// |       alternative
+// *       zero or more  (left associative)
+// +       one or more   (left associative)
+// {}      order does not matter
+
+
+// See relevant docs for more information
+
+
+// "Stringy"-type symbols
+new-type         // String represents a unique name (type)
+type            // String represents a declared name (type)
+alias           // String represents the alias of a newly initialized system.
+                //      Must be unique within the scope of the circuit it resides in
+ident           // String represents an identifier, the alias of an initialized system or bus
+
+// Core declarations
+blueprint       ::= directive* {device* circuit* clock* [main]} EOF
+main            ::= "MAIN" "{" [input] [output] {instantiate* connection+} "}"
+device          ::= "DEVICE" new-type "{" input output table "}"
+circuit         ::= "CIRCUIT" new-type "{" input output {instantiate* connection+} "}"
+clock           ::= "CLOCK" new-type "{" frequency [jitter] [phase] "}"
+
+// Directives
+directive       ::= include
+include         ::= "#include" ident
+
+// Device
+
+// Instantiate
+instantiate         ::= (instantiate-norm | instantiate-count | instantiate-lazy)
+instantiate-norm    ::= "INSTANTIATE"       type "AS" alias
+instantiate-count   ::= "INSTANTIATE_COUNT" type int alias
+instantiate-lazy    ::= "INSTANTIATE_LAZY"  type "AS" alias
+
+
+// References
+// First line specifies receiver system, second line specifies inputs to this system
+// Third line is syntactic sugar to connect to the circuit's output bus' input.
+connection          ::= ident "("
+                            (assign | outReference) ("," (assign | outReference))*
+                        ")" [["::" (int | ident) | ("[" int "]")] "-->" (int | ident)]
+assign              ::= inReference "=" outReference
+inReference         ::=             [(int | ident)  | ("[" int "]")] // inReference  is an input bus on this system,
+outReference        ::= ident [("::" (int | ident)) | ("[" int "]")] // outReference is an output bus on a system
+                                                                     // within this circuit (can be this one)
+
+
+// Clock settings
+Frequency           ::= "FREQUENCY" number
+Jitter              ::= "JITTER" ((int | number) | "[" minus number ":" number "]")
+Phase               ::= "PHASE" (int | ("[" number ":" number "]" ("," "[" number ":" number "]")*))
+
+// misc
+number              ::= int ["." [int]]
+minus               ::= "-"
