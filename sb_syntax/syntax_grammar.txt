@@ -11,24 +11,41 @@
 
 
 // "Stringy"-type symbols
-new-type         // String represents a unique name (type)
-type            // String represents a declared name (type)
-alias           // String represents the alias of a newly initialized system.
-                //      Must be unique within the scope of the circuit it resides in
-ident           // String represents an identifier, the alias of an initialized system or bus
+new-type            // String represents a unique name (type)
+type                // String represents a declared name (type)
+alias               // String represents the alias of a newly initialized system.
+                    //      Must be unique within the scope of the circuit it resides in
+ident               // String represents a system identifier, the alias of an initialized system or bus
+fAlias              // Alias but for functions
+fIdent              // Identifier but for functions
 
 // Core declarations
-blueprint       ::= directive* {device* circuit* clock* [main]} EOF
-main            ::= "MAIN" "{" [input] [output] {instantiate* connection+} "}"
-device          ::= "DEVICE" new-type "{" input output table "}"
-circuit         ::= "CIRCUIT" new-type "{" input output {instantiate* connection+} "}"
-clock           ::= "CLOCK" new-type "{" frequency [jitter] [phase] "}"
+blueprint           ::= directive* {device* circuit* clock* [main]} EOF
+main                ::= "MAIN" "{" [input] [output] {instantiate* connection+} "}"
+device              ::= "DEVICE" new-type "{" input output (table | fIdent | lambdaFunction) "}"
+circuit             ::= "CIRCUIT" new-type "{" input output {instantiate* connection+} "}"
+clock               ::= "CLOCK" new-type "{" frequency [jitter] [phase] "}"
 
 // Directives
-directive       ::= include
-include         ::= "#include" ident
+directive           ::= include
+include             ::= "#include" ident
 
 // Device
+table               ::= "TABLE" "[" ident* int* "]" // number of ident must be number of IO buses on device
+                                                    // and have the same ordering as the input + output aliases
+                                                    // number of int must be 2^(number of input buses)
+function            ::= "FUNCTION" fAlias ":" lambdaFunction
+lambdaFunction      ::= [String ["," String]*] "|->" expr   // String are variables
+
+expr                ::= expr1
+expr1               ::= expr2 ["||" expr2]
+expr2               ::= expr3 ["&&" expr3]
+expr3               ::= expr4 [("<" | "<=" | ">=" | ">") expr4]
+expr4               ::= expr5 [("+" | "-") expr5]
+expr5               ::= expr6 [("*" | "/" | "%") expr6]
+expr6               ::= int | String                        // String are variables declared in lambdaFunction
+                      | ( "(" expr ")" )
+
 
 // Instantiate
 instantiate         ::= (instantiate-norm | instantiate-count | instantiate-lazy)
