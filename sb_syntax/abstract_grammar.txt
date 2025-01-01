@@ -1,0 +1,56 @@
+// The top AST node
+Blueprint       ::= Directive* Decl*
+
+// Directives
+Directive       ::= Include
+Include         ::= String  // Path to file
+
+
+// Declarations
+Decl            ::= DeviceDecl | CircuitDecl | ClockDecl | MainDecl
+DeviceDecl      ::= DeviceType Input Output Table
+CircuitDecl     ::= CircuitType Input Output Instantiate* Connection+
+ClockDecl       ::= ClockType Frequency Jitter Phase
+MainDecl        ::= [Input] [Output] Instantiate* Connection+
+
+
+// Types
+Type                ::= BaseType | DeviceType | CircuitType | ClockType
+
+// UNKNOWN is used when no type can be inferred, NONE is used when there is no type
+BaseType            ::= UNKNOWN | NONE
+                      | AND_GATE | OR_GATE | XOR_GATE | BUFFER_GATE | NAND_GATE
+                      | NOR_GATE | XNOR_GATE | NOT_GATE
+                        // May not need the GATE types, gate device definitions can be injected / imported
+DeviceType          ::= String
+CircuitType         ::= String
+ClockType           ::= String
+
+
+// IO
+Input               ::= String* //
+Output              ::= String* //
+
+
+// Instantiate
+Instantiate         ::= (InstantiateNorm | InstantiateCount | InstantiateLazy)
+InstantiateNorm     ::= Type String
+InstantiateCount    ::= Type String int
+InstantiateLazy     ::= Type String
+
+
+// Device
+
+// Connection
+Connection          ::= SysExpr Assign* OutReference*
+Assign              ::= InReference OutReference
+InReference         ::= (int | String)              // int for bus indexing, String for bus aliasing
+OutReference        ::= SysExpr [(int | String)]    // int for bus indexing, String for bus aliasing
+
+// Clock settings
+Frequency           ::= double
+Jitter              ::= Range
+Phase               ::= Range+
+
+// misc
+Range               ::= double double // inclusive start, exclusive end
